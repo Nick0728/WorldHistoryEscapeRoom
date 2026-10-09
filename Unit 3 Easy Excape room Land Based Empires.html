@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape the Imperial Palace: Land-Based Empires (1450-1750)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600;700;900&family=Faustina:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Faustina', serif;
+            background-color: #0d0b09;
+            color: #e6dac3;
+            background-image: radial-gradient(circle, rgba(28,21,16,0.9) 0%, rgba(10,8,6,1) 100%), url('https://www.transparenttextures.com/patterns/dark-leather.png');
+        }
+
+        h1, h2, h3, h4, .font-cinzel {
+            font-family: 'Cinzel', serif;
+        }
+
+        .font-title {
+            font-family: 'Cinzel Decorative', cursive;
+        }
+
+        .parchment-bg {
+            background-color: #1a1510;
+            background-image: radial-gradient(#261f18 1px, transparent 1px);
+            background-size: 16px 16px;
+            border: 2px solid #8b6b32;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8), 0 10px 25px rgba(0,0,0,0.7);
+        }
+
+        .parchment-light {
+            background: #231c14;
+            border: 1px solid #a88444;
+        }
+
+        .gold-border {
+            border: 2px solid #c5a059;
+            box-shadow: 0 0 10px rgba(197, 160, 89, 0.3);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fff2a3 0%, #c5a059 50%, #8a6421 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-btn {
+            background: linear-gradient(180deg, #b89248 0%, #805b22 100%);
+            color: #110c05;
+            font-weight: bold;
+            font-family: 'Cinzel', serif;
+            border: 1px solid #ffd700;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .gold-btn:hover:not(:disabled) {
+            background: linear-gradient(180deg, #d4a955 0%, #9e722e 100%);
+            box-shadow: 0 0 15px rgba(212, 169, 85, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .gold-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(80%);
+        }
+
+        .danger-btn {
+            background: linear-gradient(180deg, #8b1e1e 0%, #520b0b 100%);
+            color: #fce8e8;
+            font-family: 'Cinzel', serif;
+            border: 1px solid #e64a4a;
+        }
+
+        .danger-btn:hover {
+            background: linear-gradient(180deg, #a82828 0%, #6e1111 100%);
+            box-shadow: 0 0 15px rgba(230, 74, 74, 0.5);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #110d09;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #544124;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b6b32;
+        }
+
+        .matching-item {
+            cursor: grab;
+            user-select: none;
+            transition: all 0.2s;
+        }
+        .matching-item:active {
+            cursor: grabbing;
+        }
+        
+        .selected-node {
+            box-shadow: 0 0 20px #ffd700, inset 0 0 10px #ffd700;
+        }
+
+        .cipher-dial {
+            transition: transform 0.3s ease;
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .pulse-gold {
+            animation: pulse-slow 2.5s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-amber-900 selection:text-amber-100">
+
+    <!-- Top Header & HUD Bar -->
+    <header class="bg-black/80 border-b border-amber-700/50 p-3 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-3">
+            <!-- Title Branding -->
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid font-2xl fa-chess-rook text-amber-500 text-2xl"></i>
+                <div>
+                    <h1 class="text-lg md:text-xl font-bold font-title gold-gradient-text leading-tight">ESCAPE THE IMPERIAL PALACE</h1>
+                    <p class="text-xs text-amber-300/70 uppercase tracking-widest font-cinzel">AP World History: Unit 3 (1450-1750)</p>
+                </div>
+            </div>
+
+            <!-- Game HUD Metrics -->
+            <div class="flex items-center gap-4 text-sm font-cinzel">
+                <!-- Timer -->
+                <div class="flex items-center gap-2 bg-amber-950/60 border border-amber-800/60 px-3 py-1.5 rounded-md">
+                    <i class="fa-regular fa-clock text-amber-400"></i>
+                    <span>Time: <span id="timer-display" class="font-mono text-amber-200 font-bold">35:00</span></span>
+                </div>
+
+                <!-- Tokens -->
+                <div class="flex items-center gap-2 bg-amber-950/60 border border-amber-800/60 px-3 py-1.5 rounded-md" title="Imperial Seal Tokens (Backtrack or Request Clues)">
+                    <i class="fa-solid fa-coins text-yellow-500"></i>
+                    <span>Seals: <span id="token-display" class="text-amber-200 font-bold">3</span></span>
+                </div>
+
+                <!-- Keys / Artifact Progress -->
+                <div class="flex items-center gap-2 bg-amber-950/60 border border-amber-800/60 px-3 py-1.5 rounded-md">
+                    <i class="fa-solid fa-key text-amber-400"></i>
+                    <span>Keys: <span id="keys-display" class="text-amber-200 font-bold">0 / 4</span></span>
+                </div>
+
+                <!-- Help/Hint Button -->
+                <button id="hint-btn" onclick="openHintModal()" class="px-3 py-1.5 bg-amber-900/60 hover:bg-amber-800 border border-amber-600/60 rounded text-xs text-amber-200 flex items-center gap-1 transition">
+                    <i class="fa-solid fa-lightbulb text-yellow-400"></i> Imperial Clue
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Viewport -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6">
+
+        <!-- Progress Bar Section -->
+        <div class="w-full bg-black/60 p-2 rounded-lg border border-amber-900/40">
+            <div class="flex justify-between text-xs font-cinzel text-amber-300 mb-1">
+                <span>Imperial Reach & Influence</span>
+                <span id="progress-text">0% Unlocked</span>
+            </div>
+            <div class="w-full bg-amber-950/80 rounded-full h-3 border border-amber-900/80 overflow-hidden">
+                <div id="progress-bar" class="bg-gradient-to-r from-amber-700 via-amber-500 to-yellow-400 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Dynamic Screen Render Area -->
+        <div id="screen-container" class="flex-grow flex flex-col">
+            <!-- Screens are dynamically rendered via JavaScript -->
+        </div>
+
+    </main>
+
+    <!-- Modal for Feedback & Hints -->
+    <div id="game-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="parchment-bg rounded-xl max-w-lg w-full p-6 relative border-2 border-amber-500 shadow-2xl">
+            <button onclick="closeModal()" class="absolute top-3 right-3 text-amber-400 hover:text-amber-100 text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="modal-title" class="text-xl font-bold font-cinzel gold-gradient-text mb-3 border-b border-amber-800 pb-2">
+                Imperial Decree
+            </div>
+            <div id="modal-body" class="text-amber-100/90 text-sm leading-relaxed space-y-3 mb-6">
+                <!-- Content injected dynamically -->
+            </div>
+            <div id="modal-footer" class="flex justify-end gap-2">
+                <button onclick="closeModal()" class="gold-btn px-4 py-2 text-sm rounded">Acknowledge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Information -->
+    <footer class="bg-black/90 border-t border-amber-950 p-3 text-center text-xs text-amber-500/70 font-cinzel">
+        <p>AP World History: Modern — Unit 3: Land-Based Empires (1450–1750) Escape Simulation</p>
+    </footer>
+
+    <script>
+        // Global State
+        const gameState = {
+            timer: 35 * 60, // 35 minutes in seconds
+            timerInterval: null,
+            tokens: 3,
+            keysUnlocked: {
+                gunpowder: false,
+                bureaucracy: false,
+                architecture: false,
+                revenue: false,
+                belief: false
+            },
+            currentRoom: 'intro', // intro, courtyard, room_gunpowder, room_bureaucracy, room_architecture, room_revenue, room_belief, game_over, victory
+            historyLog: [],
+            pathTaken: [],
+            mistakesCount: 0,
+            activeEnding: null
+        };
+
+        // SPICE-T Historical Framework Key Reference Data
+        const historicalData = {
+            gunpowder: {
+                title: "The Armory of Gunpowder Empires",
+                code: "1450",
+                clue: "Gunpowder weapons, cannons, and armed trade allowed Manchu, Mughal, Ottoman, and Safavid empires to consolidate land across Asia and Europe."
+            },
+            bureaucracy: {
+                title: "The Royal Bureaucratic Archives",
+                code: "DEVSHIRME",
+                clue: "Rulers maintained control using specialized elites like Ottoman Devshirme/Janissaries and salaried Samurai in Japan."
+            },
+            architecture: {
+                title: "The Gallery of Monumental Art",
+                code: "VERSAILLES",
+                clue: "Absolute power was legitimized through magnificent architecture (Versailles, Taj Mahal, Forbidden City) and religious concepts like Divine Right."
+            },
+            revenue: {
+                title: "The Vault of Taxes & Revenue",
+                code: "4200",
+                clue: "Tax farming (Ottomans), Zamindars (Mughals), and collecting hard silver currency (Ming) financed massive state expansion."
+            },
+            belief: {
+                title: "The Sacred Temple of Faiths",
+                code: "SIKHISM",
+                clue: "The Sunni-Shi'a split intensified Ottoman-Safavid rivalries, while Sikhism emerged from Hindu-Muslim interaction in South Asia."
+            }
+        };
+
+        // Window Onload Initialization
+        window.onload = function() {
+            startTimer();
+            renderScreen('intro');
+        };
+
+        function startTimer() {
+            if (gameState.timerInterval) clearInterval(gameState.timerInterval);
+            gameState.timerInterval = setInterval(() => {
+                if (gameState.timer > 0) {
+                    gameState.timer--;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(gameState.timerInterval);
+                    triggerFailure("Time Exhaustion: Imperial Rebellion!", "You ran out of time to centralize control over the realm. Regional noble factions revolted, throwing the empire into civil anarchy.");
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(gameState.timer / 60);
+            const seconds = gameState.timer % 60;
+            const display = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            const el = document.getElementById('timer-display');
+            if (el) el.textContent = display;
+        }
+
+        function updateHUD() {
+            document.getElementById('token-display').textContent = gameState.tokens;
+            const keysCount = Object.values(gameState.keysUnlocked).filter(Boolean).length;
+            document.getElementById('keys-display').textContent = `${keysCount} / 5`;
+            
+            // Update Progress Bar
+            const percent = Math.round((keysCount / 5) * 100);
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+            document.getElementById('progress-text').textContent = `${percent}% Unlocked`;
+        }
+
+        function renderScreen(screenId) {
+            gameState.currentRoom = screenId;
+            const container = document.getElementById('screen-container');
+            container.innerHTML = ''; // Clear container
+
+            switch (screenId) {
+                case 'intro':
+                    container.innerHTML = createIntroHTML();
+                    break;
+                case 'courtyard':
+                    container.innerHTML = createCourtyardHTML();
+                    break;
+                case 'room_gunpowder':
+                    container.innerHTML = createGunpowderRoomHTML();
+                    initGunpowderPuzzle();
+                    break;
+                case 'room_bureaucracy':
+                    container.innerHTML = createBureaucracyRoomHTML();
+                    initBureaucracyPuzzle();
+                    break;
+                case 'room_architecture':
+                    container.innerHTML = createArchitectureRoomHTML();
+                    break;
+                case 'room_revenue':
+                    container.innerHTML = createRevenueRoomHTML();
+                    break;
+                case 'room_belief':
+                    container.innerHTML = createBeliefRoomHTML();
+                    break;
+                case 'failure':
+                    container.innerHTML = createFailureHTML();
+                    break;
+                case 'victory':
+                    container.innerHTML = createVictoryHTML();
+                    break;
+                default:
+                    container.innerHTML = createCourtyardHTML();
+            }
+
+            updateHUD();
+        }
+
+        function createIntroHTML() {
+            return `
+                <div class="parchment-bg rounded-xl p-6 md:p-10 flex flex-col items-center text-center my-auto">
+                    <div class="w-20 h-20 rounded-full bg-amber-900/50 border-2 border-amber-500 flex items-center justify-center mb-4 pulse-gold">
+                        <i class="fa-solid fa-crown text-4xl text-amber-400"></i>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-extrabold font-title gold-gradient-text mb-2">IMPERIAL PALACE ESCAPE</h2>
+                    <p class="text-amber-300 font-cinzel text-sm md:text-base tracking-widest mb-6">UNIT 3: LAND-BASED EMPIRES (1450–1750)</p>
+                    
+                    <div class="max-w-2xl text-amber-100/90 text-sm md:text-base space-y-4 text-left bg-black/40 p-5 rounded-lg border border-amber-900/60 mb-8">
+                        <p><strong class="text-amber-400">The Context:</strong> You are the Grand Scholar summoned by the Supreme Sovereign to secure the central imperial throne room. Outside, regional rivals, mutinous elite guards, and religious schisms threaten the empire’s unity.</p>
+                        <p><strong class="text-amber-400">Your Mission:</strong> Solve the 5 historical security locks scattered across the palace wings using your knowledge of AP World History Land-Based Empires (Ottomans, Safavids, Mughals, Qing, and Absolutist Europe).</p>
+                        <p><strong class="text-amber-400 font-cinzel">Beware:</strong> Strategic mistakes can trigger catastrophic imperial failures (e.g., Janissary mutinies or treasury bankruptcy). You hold <strong>3 Imperial Seal Tokens</strong> to backtrack or seek clues.</p>
+                    </div>
+
+                    <button onclick="renderScreen('courtyard')" class="gold-btn px-8 py-3 text-lg rounded-lg shadow-lg flex items-center gap-3">
+                        <i class="fa-solid fa-door-open"></i> Enter the Grand Courtyard
+                    </button>
+                </div>
+            `;
+        }
+
+        function createCourtyardHTML() {
+            const gunpowderUnlocked = gameState.keysUnlocked.gunpowder;
+            const bureaucracyUnlocked = gameState.keysUnlocked.bureaucracy;
+            const architectureUnlocked = gameState.keysUnlocked.architecture;
+            const revenueUnlocked = gameState.keysUnlocked.revenue;
+            const beliefUnlocked = gameState.keysUnlocked.belief;
+
+            const allUnlocked = gunpowderUnlocked && bureaucracyUnlocked && architectureUnlocked && revenueUnlocked && beliefUnlocked;
+
+            return `
+                <div class="flex flex-col gap-6">
+                    <div class="parchment-bg p-6 rounded-xl text-center">
+                        <h2 class="text-2xl font-bold font-cinzel gold-gradient-text mb-2">The Grand Imperial Courtyard</h2>
+                        <p class="text-sm text-amber-200/80 max-w-2xl mx-auto">Select an Imperial Wing to attempt its challenge lock. Unlocking wings increases your authority and grants access to the Final Throne Room Seal.</p>
+                    </div>
+
+                    <!-- Palace Wings Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        
+                        <!-- Wing 1: Gunpowder -->
+                        <div class="parchment-light p-5 rounded-lg border ${gunpowderUnlocked ? 'border-green-500/80 bg-green-950/20' : 'border-amber-800'} flex flex-col justify-between transition hover:border-amber-500">
+                            <div>
+                                <div class="flex justify-between items-start mb-3">
+                                    <i class="fa-solid fa-burst text-3xl ${gunpowderUnlocked ? 'text-green-400' : 'text-amber-500'}"></i>
+                                    <span class="text-xs font-cinzel px-2.5 py-1 rounded ${gunpowderUnlocked ? 'bg-green-900/80 text-green-200' : 'bg-amber-900/50 text-amber-300'}">
+                                        ${gunpowderUnlocked ? '<i class="fa-solid fa-check"></i> Unlocked' : 'Locked'}
+                                    </span>
+                                </div>
+                                <h3 class="font-bold text-lg text-amber-200 font-cinzel mb-1">1. Armory of Gunpowder</h3>
+                                <p class="text-xs text-amber-300/70 mb-4">Topic 3.1: Expansion via gunpowder, cannons, and imperial land rivalries (Safavid-Mughal, Songhai-Morocco).</p>
+                            </div>
+                            <button onclick="renderScreen('room_gunpowder')" class="gold-btn w-full py-2 text-sm rounded">
+                                ${gunpowderUnlocked ? 'Revisit Armory' : 'Enter Armory'}
+                            </button>
+                        </div>
+
+                        <!-- Wing 2: Bureaucracy -->
+                        <div class="parchment-light p-5 rounded-lg border ${bureaucracyUnlocked ? 'border-green-500/80 bg-green-950/20' : 'border-amber-800'} flex flex-col justify-between transition hover:border-amber-500">
+                            <div>
+                                <div class="flex justify-between items-start mb-3">
+                                    <i class="fa-solid fa-user-shield text-3xl ${bureaucracyUnlocked ? 'text-green-400' : 'text-amber-500'}"></i>
+                                    <span class="text-xs font-cinzel px-2.5 py-1 rounded ${bureaucracyUnlocked ? 'bg-green-900/80 text-green-200' : 'bg-amber-900/50 text-amber-300'}">
+                                        ${bureaucracyUnlocked ? '<i class="fa-solid fa-check"></i> Unlocked' : 'Locked'}
+                                    </span>
+                                </div>
+                                <h3 class="font-bold text-lg text-amber-200 font-cinzel mb-1">2. Bureaucratic Archives</h3>
+                                <p class="text-xs text-amber-300/70 mb-4">Topic 3.2: Recruitment of elite military & bureaucratic groups (Devshirme, Janissaries, Samurai).</p>
+                            </div>
+                            <button onclick="renderScreen('room_bureaucracy')" class="gold-btn w-full py-2 text-sm rounded">
+                                ${bureaucracyUnlocked ? 'Revisit Archives' : 'Enter Archives'}
+                            </button>
+                        </div>
+
+                        <!-- Wing 3: Architecture -->
+                        <div class="parchment-light p-5 rounded-lg border ${architectureUnlocked ? 'border-green-500/80 bg-green-950/20' : 'border-amber-800'} flex flex-col justify-between transition hover:border-amber-500">
+                            <div>
+                                <div class="flex justify-between items-start mb-3">
+                                    <i class="fa-solid fa-landmark text-3xl ${architectureUnlocked ? 'text-green-400' : 'text-amber-500'}"></i>
+                                    <span class="text-xs font-cinzel px-2.5 py-1 rounded ${architectureUnlocked ? 'bg-green-900/80 text-green-200' : 'bg-amber-900/50 text-amber-300'}">
+                                        ${architectureUnlocked ? '<i class="fa-solid fa-check"></i> Unlocked' : 'Locked'}
+                                    </span>
+                                </div>
+                                <h3 class="font-bold text-lg text-amber-200 font-cinzel mb-1">3. Monumental Gallery</h3>
+                                <p class="text-xs text-amber-300/70 mb-4">Topic 3.2: Legitimizing power via art, Divine Right, Versailles, Taj Mahal, and Imperial Portraits.</p>
+                            </div>
+                            <button onclick="renderScreen('room_architecture')" class="gold-btn w-full py-2 text-sm rounded">
+                                ${architectureUnlocked ? 'Revisit Gallery' : 'Enter Gallery'}
+                            </button>
+                        </div>
+
+                        <!-- Wing 4: Revenue & Tax Systems -->
+                        <div class="parchment-light p-5 rounded-lg border ${revenueUnlocked ? 'border-green-500/80 bg-green-950/20' : 'border-amber-800'} flex flex-col justify-between transition hover:border-amber-500">
+                            <div>
+                                <div class="flex justify-between items-start mb-3">
+                                    <i class="fa-solid fa-coins text-3xl ${revenueUnlocked ? 'text-green-400' : 'text-amber-500'}"></i>
+                                    <span class="text-xs font-cinzel px-2.5 py-1 rounded ${revenueUnlocked ? 'bg-green-900/80 text-green-200' : 'bg-amber-900/50 text-amber-300'}">
+                                        ${revenueUnlocked ? '<i class="fa-solid fa-check"></i> Unlocked' : 'Locked'}
+                                    </span>
+                                </div>
+                                <h3 class="font-bold text-lg text-amber-200 font-cinzel mb-1">4. Tax & Revenue Vault</h3>
+                                <p class="text-xs text-amber-300/70 mb-4">Topic 3.2: Revenue generation: Ottoman Tax Farming, Mughal Zamindars, and Ming silver currency.</p>
+                            </div>
+                            <button onclick="renderScreen('room_revenue')" class="gold-btn w-full py-2 text-sm rounded">
+                                ${revenueUnlocked ? 'Revisit Vault' : 'Enter Vault'}
+                            </button>
+                        </div>
+
+                        <!-- Wing 5: Belief Systems -->
+                        <div class="parchment-light p-5 rounded-lg border ${beliefUnlocked ? 'border-green-500/80 bg-green-950/20' : 'border-amber-800'} flex flex-col justify-between transition hover:border-amber-500">
+                            <div>
+                                <div class="flex justify-between items-start mb-3">
+                                    <i class="fa-solid fa-om text-3xl ${beliefUnlocked ? 'text-green-400' : 'text-amber-500'}"></i>
+                                    <span class="text-xs font-cinzel px-2.5 py-1 rounded ${beliefUnlocked ? 'bg-green-900/80 text-green-200' : 'bg-amber-900/50 text-amber-300'}">
+                                        ${beliefUnlocked ? '<i class="fa-solid fa-check"></i> Unlocked' : 'Locked'}
+                                    </span>
+                                </div>
+                                <h3 class="font-bold text-lg text-amber-200 font-cinzel mb-1">5. Shrine of Belief Systems</h3>
+                                <p class="text-xs text-amber-300/70 mb-4">Topic 3.3: Protestant Reformation, Ottoman-Safavid Sunni/Shi'a conflict, and rise of Sikhism.</p>
+                            </div>
+                            <button onclick="renderScreen('room_belief')" class="gold-btn w-full py-2 text-sm rounded">
+                                ${beliefUnlocked ? 'Revisit Shrine' : 'Enter Shrine'}
+                            </button>
+                        </div>
+
+                        <!-- Throne Room Final Gate -->
+                        <div class="parchment-bg p-5 rounded-lg border border-yellow-500/60 flex flex-col justify-between bg-amber-950/40">
+                            <div>
+                                <div class="flex justify-between items-start mb-3">
+                                    <i class="fa-solid fa-dungeon text-3xl text-yellow-400 pulse-gold"></i>
+                                    <span class="text-xs font-cinzel px-2.5 py-1 rounded bg-yellow-900/80 text-yellow-200">
+                                        Final Seal
+                                    </span>
+                                </div>
+                                <h3 class="font-bold text-lg gold-gradient-text font-cinzel mb-1">Imperial Throne Room</h3>
+                                <p class="text-xs text-amber-300/70 mb-4">Unlock at least 3 wings to attempt final escape, or all 5 for the Mastermind Ending!</p>
+                            </div>
+                            <button onclick="attemptFinalEscape()" ${Object.values(gameState.keysUnlocked).filter(Boolean).length >= 3 ? '' : 'disabled'} class="gold-btn w-full py-2 text-sm rounded">
+                                Claim Imperial Sovereignty
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+        }
+
+        function createGunpowderRoomHTML() {
+            return `
+                <div class="parchment-bg p-6 rounded-xl flex flex-col gap-6">
+                    <div class="flex justify-between items-center border-b border-amber-800 pb-3">
+                        <div>
+                            <h2 class="text-2xl font-bold font-cinzel gold-gradient-text">1. The Armory of Gunpowder Empires</h2>
+                            <p class="text-xs text-amber-300">Topic 3.1: Imperial Expansion (1450–1750)</p>
+                        </div>
+                        <button onclick="renderScreen('courtyard')" class="px-3 py-1 bg-amber-900/60 border border-amber-700 text-xs rounded text-amber-200">
+                            <i class="fa-solid fa-arrow-left"></i> Return to Courtyard
+                        </button>
+                    </div>
+
+                    <div class="text-sm text-amber-100/90 space-y-2 bg-black/40 p-4 rounded border border-amber-900/50">
+                        <p><strong class="text-amber-400">Puzzle Prompt:</strong> Imperial expansion relied heavily on gunpowder, armed trade, and cannons. Configure the 4 major land-based gunpowder empires with their correct region and primary state rivalry to unlock the Armory Lock.</p>
+                    </div>
+
+                    <!-- Interactive Cipher Wheel / Select Matching -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Empire 1: Ottoman -->
+                        <div class="bg-amber-950/40 p-4 rounded border border-amber-800">
+                            <label class="block text-sm font-cinzel text-amber-300 mb-1 font-bold">1. Ottoman Empire</label>
+                            <div class="space-y-2">
+                                <select id="ott-region" class="w-full bg-black/80 border border-amber-700 text-amber-200 text-xs p-2 rounded">
+                                    <option value="">-- Select Region --</option>
+                                    <option value="East Asia">East Asia</option>
+                                    <option value="Southern Europe, Middle East, N. Africa">Southern Europe, Middle East, N. Africa</option>
+                                    <option value="South Asia">South Asia</option>
+                                </select>
+                                <select id="ott-rivalry" class="w-full bg-black/80 border border-amber-700 text-amber-200 text-xs p-2 rounded">
+                                    <option value="">-- Select State Rivalry --</option>
+                                    <option value="Conflict with Morocco">Conflict with Morocco</option>
+                                    <option value="Sunni vs Shi'a Conflict with Safavids">Sunni vs Shi'a Conflict with Safavids</option>
+                                    <option value="Border War with Qing">Border War with Qing</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Empire 2: Safavid -->
+                        <div class="bg-amber-950/40 p-4 rounded border border-amber-800">
+                            <label class="block text-sm font-cinzel text-amber-300 mb-1 font-bold">2. Safavid Empire</label>
+                            <div class="space-y-2">
+                                <select id="saf-region" class="w-full bg-black/80 border border-amber-700 text-amber-200 text-xs p-2 rounded">
+                                    <option value="">-- Select Region --</option>
+                                    <option value="Middle East (Persia)">Middle East (Persia)</option>
+                                    <option value="Mesoamerica">Mesoamerica</option>
+                                    <option value="Western Europe">Western Europe</option>
+                                </select>
+                                <select id="saf-rivalry" class="w-full bg-black/80 border border-amber-700 text-amber-200 text-xs p-2 rounded">
+                                    <option value="">-- Select State Rivalry --</option>
+                                    <option value="Conflict with Songhai">Conflict with Songhai</option>
+                                    <option value="Territorial/Trade Conflict with Mughal & Ottoman">Territorial/Trade Conflict with Mughal & Ottoman</option>
+                                    <option value="War with Tokugawas">War with Tokugawas</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Empire 3: Mughal -->
+                        <div class="bg-amber-950/40 p-4 rounded border border-amber-800">
+                            <label class="block text-sm font-cinzel text-amber-300 mb-1 font-bold">3. Mughal Empire</label>
+                            <div class="space-y-2">
+                                <select id="mug-region" class="w-full bg-black/80 border border-amber-700 text-amber-200 text-xs p-2 rounded">
+                                    <option value="">-- Select Region --</option>
+                                    <option value="South & Central Asia (India)">South & Central Asia (India)</option>
+                                    <option value="North Africa">North Africa</option>
+                                    <option value="Andean South America">Andean South America</option>
+                                </select>
+                                <select id="mug-feature" class="w-full bg-black/80 border border-amber-700 text-amber-200 text-xs p-2 rounded">
+                                    <option value="">-- Select Expansion Method --</option>
+                                    <option value="Maritime Isolation">Maritime Isolation</option>
+                                    <option value="Gunpowder conquests under Akbar/Babur">Gunpowder conquests under Akbar/Babur</option>
+                                    <option value="Inca Road System">Inca Road System</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Empire 4: Manchu / Qing -->
+                        <div class="bg-amber-950/40 p-4 rounded border border-amber-800">
+                            <label class="block text-sm font-cinzel text-amber-300 mb-1 font-bold">4. Manchu / Qing Dynasty</label>
+                            <div class="space-y-2">
+                                <select id="qing-region" class="w-full bg-black/80 border border-amber-700 text-amber-200 text-xs p-2 rounded">
+                                    <option value="">-- Select Region --</option>
+                                    <option value="Central & East Asia">Central & East Asia</option>
+                                    <option value="West Africa">West Africa</option>
+                                    <option value="Balkan Peninsula">Balkan Peninsula</option>
+                                </select>
+                                <select id="qing-feature" class="w-full bg-black/80 border border-amber-700 text-amber-200 text-xs p-2 rounded">
+                                    <option value="">-- Select Expansion Policy --</option>
+                                    <option value="Tributary system & Imperial expansion into Tibet/Xinjiang">Tributary system & Imperial expansion into Tibet/Xinjiang</option>
+                                    <option value="Transatlantic Slave Trade">Transatlantic Slave Trade</option>
+                                    <option value="Protestant Reformation">Protestant Reformation</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trap Risk Choice -->
+                    <div class="bg-red-950/30 p-3 rounded border border-red-800/60 text-xs text-red-200 flex items-center justify-between">
+                        <span><i class="fa-solid fa-triangle-exclamation text-red-400 mr-2"></i><strong>Strategic Risk:</strong> Selecting inaccurate state rivalries (e.g. confusing Songhai with Safavid) may ignite a regional border conflict!</span>
+                    </div>
+
+                    <div class="flex justify-end gap-3">
+                        <button onclick="checkGunpowderPuzzle()" class="gold-btn px-6 py-2 rounded text-sm">
+                            <i class="fa-solid fa-lock-open mr-1"></i> Submit Configuration
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function initGunpowderPuzzle() {}
+
+        function checkGunpowderPuzzle() {
+            const ottR = document.getElementById('ott-region').value;
+            const ottRiv = document.getElementById('ott-rivalry').value;
+            const safR = document.getElementById('saf-region').value;
+            const safRiv = document.getElementById('saf-rivalry').value;
+            const mugR = document.getElementById('mug-region').value;
+            const mugF = document.getElementById('mug-feature').value;
+            const qingR = document.getElementById('qing-region').value;
+            const qingF = document.getElementById('qing-feature').value;
+
+            if (ottR === "Southern Europe, Middle East, N. Africa" &&
+                ottRiv === "Sunni vs Shi'a Conflict with Safavids" &&
+                safR === "Middle East (Persia)" &&
+                safRiv === "Territorial/Trade Conflict with Mughal & Ottoman" &&
+                mugR === "South & Central Asia (India)" &&
+                mugF === "Gunpowder conquests under Akbar/Babur" &&
+                qingR === "Central & East Asia" &&
+                qingF === "Tributary system & Imperial expansion into Tibet/Xinjiang") {
+
+                gameState.keysUnlocked.gunpowder = true;
+                showModal("Key Unlocked!", "<p class='text-green-300 font-bold'>Correct Gunpowder Imperial Alignment!</p><p>You successfully identified the 4 land-based empires and their geographical expansion. Imperial artillery officers yield control of the Armory to you.</p><p class='text-xs text-amber-300 mt-2'><strong>AP World Concept:</strong> Imperial expansion relied on the increased use of gunpowder, cannons, and armed trade across Eurasia.</p>");
+                renderScreen('courtyard');
+            } else {
+                gameState.mistakesCount++;
+                if (ottRiv === "Conflict with Morocco" || safRiv === "Conflict with Songhai") {
+                    triggerFailure("Military Catastrophe: Safavid-Mughal & Songhai Trap!", "You miscalculated the state rivalries! The Songhai Empire was conquered by Moroccan forces armed with gunpowder, while the Safavids clashed with Mughals over Kandahar. Your army was caught unprepared.");
+                } else {
+                    showModal("Invalid Alignment", "<p class='text-red-400'>Incorrect combination of geographical regions or empire expansion features.</p><p class='text-xs text-amber-200 mt-2'><strong>Hint:</strong> Remember that Ottomans dominated Southern Europe/N. Africa, Safavids were in Persia/Middle East, Mughals in South Asia, and Manchu in East Asia.</p>");
+                }
+            }
+        }
+
+        function createBureaucracyRoomHTML() {
+            return `
+                <div class="parchment-bg p-6 rounded-xl flex flex-col gap-6">
+                    <div class="flex justify-between items-center border-b border-amber-800 pb-3">
+                        <div>
+                            <h2 class="text-2xl font-bold font-cinzel gold-gradient-text">2. The Royal Bureaucratic Archives</h2>
+                            <p class="text-xs text-amber-300">Topic 3.2: Administration & Elite Military Recruitment</p>
+                        </div>
+                        <button onclick="renderScreen('courtyard')" class="px-3 py-1 bg-amber-900/60 border border-amber-700 text-xs rounded text-amber-200">
+                            <i class="fa-solid fa-arrow-left"></i> Return to Courtyard
+                        </button>
+                    </div>
+
+                    <div class="text-sm text-amber-100/90 space-y-2 bg-black/40 p-4 rounded border border-amber-900/50">
+                        <p><strong class="text-amber-400">Puzzle Prompt:</strong> Land-based rulers maintained centralized control over populations by using military professionals and bureaucratic elites. Match each imperial elite/system to its exact historical definition and empire.</p>
+                    </div>
+
+                    <!-- Drag & Drop / Selection Matrix -->
+                    <div class="space-y-4">
+                        
+                        <!-- Row 1: Devshirme / Janissaries -->
+                        <div class="bg-amber-950/40 p-4 rounded border border-amber-800 flex flex-col md:flex-row gap-4 items-center justify-between">
+                            <div class="md:w-1/3">
+                                <span class="font-bold text-amber-300 font-cinzel">A. Ottoman Devshirme & Janissaries</span>
+                            </div>
+                            <div class="md:w-2/3 w-full">
+                                <select id="bur-1" class="w-full bg-black/80 border border-amber-700 text-amber-200 text-xs p-2 rounded">
+                                    <option value="">-- Match Description --</option>
+                                    <option value="correct">Christian boys levied, converted to Islam, and trained as elite infantry & loyal civil servants.</option>
+                                    <option value="wrong1">Feudal warriors in Japan paid in salary rather than land to ensure loyalty to the Shogun.</option>
+                                    <option value="wrong2">Local tax officials in South Asia who collected revenue for the emperor.</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Salaried Samurai -->
+                        <div class="bg-amber-950/40 p-4 rounded border border-amber-800 flex flex-col md:flex-row gap-4 items-center justify-between">
+                            <div class="md:w-1/3">
+                                <span class="font-bold text-amber-300 font-cinzel">B. Salaried Samurai (Tokugawa/Japan)</span>
+                            </div>
+                            <div class="md:w-2/3 w-full">
+                                <select id="bur-2" class="w-full bg-black/80 border border-amber-700 text-amber-200 text-xs p-2 rounded">
+                                    <option value="">-- Match Description --</option>
+                                    <option value="wrong1">Christian boys levied, converted to Islam, and trained as elite infantry.</option>
+                                    <option value="correct">Military professionals paid directly in rice/stipends to diminish independent aristocratic power.</option>
+                                    <option value="wrong2">Bureaucrats who took Civil Service examinations based on Confucian classics.</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Mughal Zamindars -->
+                        <div class="bg-amber-950/40 p-4 rounded border border-amber-800 flex flex-col md:flex-row gap-4 items-center justify-between">
+                            <div class="md:w-1/3">
+                                <span class="font-bold text-amber-300 font-cinzel">C. Mughal Zamindars</span>
+                            </div>
+                            <div class="md:w-2/3 w-full">
+                                <select id="bur-3" class="w-full bg-black/80 border border-amber-700 text-amber-200 text-xs p-2 rounded">
+                                    <option value="">-- Match Description --</option>
+                                    <option value="wrong1">Royal blood relatives who governed provinces autonomously without central oversight.</option>
+                                    <option value="correct">Government officials / tax collectors who forwarded agricultural revenue to the central state.</option>
+                                    <option value="wrong2">Enslaved military officers commanding European mercenaries.</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="flex justify-end gap-3">
+                        <button onclick="checkBureaucracyPuzzle()" class="gold-btn px-6 py-2 rounded text-sm">
+                            <i class="fa-solid fa-key mr-1"></i> Unlock Archives Seal
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function initBureaucracyPuzzle() {}
+
+        function checkBureaucracyPuzzle() {
+            const b1 = document.getElementById('bur-1').value;
+            const b2 = document.getElementById('bur-2').value;
+            const b3 = document.getElementById('bur-3').value;
+
+            if (b1 === 'correct' && b2 === 'correct' && b3 === 'correct') {
+                gameState.keysUnlocked.bureaucracy = true;
+                showModal("Bureaucratic Key Unlocked!", "<p class='text-green-300 font-bold'>Mastery of Imperial Elite Recruitment!</p><p>You accurately identified the Janissaries, Salaried Samurai, and Zamindars. The Bureaucracy Archives yield their secrets.</p><p class='text-xs text-amber-300 mt-2'><strong>AP World Concept:</strong> Rulers utilized elite military troops and bureaucratic officials to maintain centralized rule over their populations.</p>");
+                renderScreen('courtyard');
+            } else {
+                gameState.mistakesCount++;
+                if (gameState.mistakesCount >= 2 && Math.random() > 0.5) {
+                    triggerFailure("Janissary Mutiny!", "Confusing elite troop commands caused an uproar among the Ottoman Janissaries! Demanding unpaid wages and political autonomy, they stormed the archives and deposed your regime.");
+                } else {
+                    showModal("Mismatched Elites", "<p class='text-red-400'>One or more elite military/bureaucratic definitions are misaligned.</p><p class='text-xs text-amber-200 mt-2'><strong>Hint:</strong> Remember Devshirme involved Ottoman child levies; Salaried Samurai received direct stipends; Zamindars were Mughal tax administrators.</p>");
+                }
+            }
+        }
+
+        function createArchitectureRoomHTML() {
+            return `
+                <div class="parchment-bg p-6 rounded-xl flex flex-col gap-6">
+                    <div class="flex justify-between items-center border-b border-amber-800 pb-3">
+                        <div>
+                            <h2 class="text-2xl font-bold font-cinzel gold-gradient-text">3. The Gallery of Monumental Art & Architecture</h2>
+                            <p class="text-xs text-amber-300">Topic 3.2: Legitimation of Imperial Power</p>
+                        </div>
+                        <button onclick="renderScreen('courtyard')" class="px-3 py-1 bg-amber-900/60 border border-amber-700 text-xs rounded text-amber-200">
+                            <i class="fa-solid fa-arrow-left"></i> Return to Courtyard
+                        </button>
+                    </div>
+
+                    <div class="text-sm text-amber-100/90 space-y-2 bg-black/40 p-4 rounded border border-amber-900/50">
+                        <p><strong class="text-amber-400">Puzzle Prompt:</strong> Rulers used religious ideas, visual art, and monumental architecture to legitimize their rule. Decode the 3-symbol Vault Combination by selecting the structure/art that matches each legitimation strategy.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <!-- Dial 1 -->
+                        <div class="bg-amber-950/40 p-4 rounded border border-amber-800 text-center flex flex-col items-center">
+                            <i class="fa-solid fa-archway text-3xl text-amber-400 mb-2"></i>
+                            <h4 class="font-bold text-sm text-amber-200 font-cinzel mb-2">1. French Royal Absolutism</h4>
+                            <p class="text-xs text-amber-300/80 mb-3">Demonstrated Divine Right and centralized noble surveillance.</p>
+                            <select id="arch-dial-1" class="w-full bg-black/80 border border-amber-700 text-amber-200 text-xs p-2 rounded">
+                                <option value="">-- Choose Structure --</option>
+                                <option value="VERSAILLES">Palace of Versailles</option>
+                                <option value="TAJ_MAHAL">Taj Mahal</option>
+                                <option value="FORBIDDEN_CITY">Forbidden City</option>
+                            </select>
+                        </div>
+
+                        <!-- Dial 2 -->
+                        <div class="bg-amber-950/40 p-4 rounded border border-amber-800 text-center flex flex-col items-center">
+                            <i class="fa-solid fa-mosque text-3xl text-amber-400 mb-2"></i>
+                            <h4 class="font-bold text-sm text-amber-200 font-cinzel mb-2">2. Mughal Architectural Masterpiece</h4>
+                            <p class="text-xs text-amber-300/80 mb-3">Mausoleum built by Shah Jahan blending Islamic & Indian aesthetics.</p>
+                            <select id="arch-dial-2" class="w-full bg-black/80 border border-amber-700 text-amber-200 text-xs p-2 rounded">
+                                <option value="">-- Choose Structure --</option>
+                                <option value="QORICANCHA">Inca Sun Temple (Qoricancha)</option>
+                                <option value="TAJ_MAHAL">Taj Mahal Mausoleum</option>
+                                <option value="VERSAILLES">Palace of Versailles</option>
+                            </select>
+                        </div>
+
+                        <!-- Dial 3 -->
+                        <div class="bg-amber-950/40 p-4 rounded border border-amber-800 text-center flex flex-col items-center">
+                            <i class="fa-solid fa-portrait text-3xl text-amber-400 mb-2"></i>
+                            <h4 class="font-bold text-sm text-amber-200 font-cinzel mb-2">3. Qing Imperial Legitimacy</h4>
+                            <p class="text-xs text-amber-300/80 mb-3">Visual art depicting emperors in scholar robes & military armor.</p>
+                            <select id="arch-dial-3" class="w-full bg-black/80 border border-amber-700 text-amber-200 text-xs p-2 rounded">
+                                <option value="">-- Choose Visual Medium --</option>
+                                <option value="HUMAN_SACRIFICE">Aztec Human Sacrifice Rituals</option>
+                                <option value="QING_PORTRAITS">Qing Imperial Portraits</option>
+                                <option value="PROTESTANT_TRACTS">Protestant Pamphlets</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-3">
+                        <button onclick="checkArchitecturePuzzle()" class="gold-btn px-6 py-2 rounded text-sm">
+                            <i class="fa-solid fa-vault mr-1"></i> Unlock Architecture Vault
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkArchitecturePuzzle() {
+            const d1 = document.getElementById('arch-dial-1').value;
+            const d2 = document.getElementById('arch-dial-2').value;
+            const d3 = document.getElementById('arch-dial-3').value;
+
+            if (d1 === 'VERSAILLES' && d2 === 'TAJ_MAHAL' && d3 === 'QING_PORTRAITS') {
+                gameState.keysUnlocked.architecture = true;
+                showModal("Vault Code Cracked!", "<p class='text-green-300 font-bold'>Legitimizing Power Mastered!</p><p>You correctly matched Louis XIV's Versailles, Shah Jahan's Taj Mahal, and the Qing Imperial Portraits.</p><p class='text-xs text-amber-300 mt-2'><strong>AP World Concept:</strong> Rulers used monumental architecture and visual portraiture to display power, project religious authority, and intimidate internal rivals.</p>");
+                renderScreen('courtyard');
+            } else {
+                showModal("Vault Locked", "<p class='text-red-400'>Incorrect combination dial settings.</p><p class='text-xs text-amber-200 mt-2'><strong>Hint:</strong> Versailles represents France; Taj Mahal represents Mughal mausolea; Imperial Portraits legitimized Qing emperors.</p>");
+            }
+        }
+
+        function createRevenueRoomHTML() {
+            return `
+                <div class="parchment-bg p-6 rounded-xl flex flex-col gap-6">
+                    <div class="flex justify-between items-center border-b border-amber-800 pb-3">
+                        <div>
+                            <h2 class="text-2xl font-bold font-cinzel gold-gradient-text">4. The Vault of Taxes & Revenue</h2>
+                            <p class="text-xs text-amber-300">Topic 3.2: Taxation Systems & Revenue Generation</p>
+                        </div>
+                        <button onclick="renderScreen('courtyard')" class="px-3 py-1 bg-amber-900/60 border border-amber-700 text-xs rounded text-amber-200">
+                            <i class="fa-solid fa-arrow-left"></i> Return to Courtyard
+                        </button>
+                    </div>
+
+                    <div class="text-sm text-amber-100/90 space-y-2 bg-black/40 p-4 rounded border border-amber-900/50">
+                        <p><strong class="text-amber-400">Puzzle Prompt:</strong> Land-based empires required immense revenue to fund gunpowder armies and territorial expansion. Calculate the Imperial Treasury Revenue Code based on historical taxation practices.</p>
+                    </div>
+
+                    <!-- Math & Systems Logic Puzzle -->
+                    <div class="bg-amber-950/30 p-5 rounded border border-amber-800 space-y-4">
+                        <div class="space-y-3 text-xs text-amber-200">
+                            <div class="p-3 bg-black/60 rounded border border-amber-900">
+                                <strong class="text-amber-400">Clue #1 (Ottoman Tax Farming):</strong> Private tax farmers bid for the right to collect taxes, paying the central government upfront. If a tax farmer collects 1,000 gold pieces and keeps a 20% commission profit, how much enters the Ottoman imperial treasury? 
+                                <br><span class="text-amber-400 font-bold">Value A = [1000 - 200] = 800</span>
+                            </div>
+
+                            <div class="p-3 bg-black/60 rounded border border-amber-900">
+                                <strong class="text-amber-400">Clue #2 (Ming Dynasty Silver Taxation):</strong> The Single Whip Law required all taxes to be paid in hard currency (silver coin) rather than grain. If 4 provinces contribute 800 silver coins each, what is the total silver yield?
+                                <br><span class="text-amber-400 font-bold">Value B = [4 x 800] = 3200</span>
+                            </div>
+
+                            <div class="p-3 bg-black/60 rounded border border-amber-900">
+                                <strong class="text-amber-400">Clue #3 (Aztec/Mexica Tribute Lists):</strong> Subject cities paid tribute in luxury goods, textiles, and jade. If a tribute list demands 200 textiles from 20 towns, how many total tribute items are collected?
+                                <br><span class="text-amber-400 font-bold">Value C = [20 x 200] = 4000</span>
+                            </div>
+                        </div>
+
+                        <!-- Code Entry -->
+                        <div class="flex flex-col md:flex-row items-center gap-4 bg-black/80 p-4 rounded border border-amber-700">
+                            <label class="text-sm font-cinzel text-amber-300 font-bold">Enter Total Consolidated Value A + Value B (800 + 3200):</label>
+                            <input type="number" id="revenue-code-input" placeholder="Enter numeric code" class="bg-amber-950 border border-amber-600 text-amber-100 font-mono text-center p-2 rounded w-40">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-3">
+                        <button onclick="checkRevenuePuzzle()" class="gold-btn px-6 py-2 rounded text-sm">
+                            <i class="fa-solid fa-coins mr-1"></i> Verify Revenue Code
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkRevenuePuzzle() {
+            const val = document.getElementById('revenue-code-input').value.trim();
+
+            if (val === '4000') {
+                gameState.keysUnlocked.revenue = true;
+                showModal("Treasury Vault Unlocked!", "<p class='text-green-300 font-bold'>Imperial Finance Mastered!</p><p>You accurately calculated the revenue yields from Ottoman tax farming and Ming silver collection (4,000 silver total).</p><p class='text-xs text-amber-300 mt-2'><strong>AP World Concept:</strong> Rulers used tax farming, zamindars, tribute lists, and hard currency collection to generate state revenue.</p>");
+                renderScreen('courtyard');
+            } else {
+                gameState.mistakesCount++;
+                if (gameState.mistakesCount >= 3) {
+                    triggerFailure("Treasury Bankruptcy & Financial Collapse!", "Errors in tax farming calculations led to predatory corruption, peasant revolts, and empty imperial vaults! Your military unpaid, the throne collapsed into financial ruin.");
+                } else {
+                    showModal("Mathematical Error", "<p class='text-red-400'>Incorrect Treasury Code.</p><p class='text-xs text-amber-200 mt-2'><strong>Hint:</strong> Calculate Value A (800) + Value B (3200) = 4000.</p>");
+                }
+            }
+        }
+
+        function createBeliefRoomHTML() {
+            return `
+                <div class="parchment-bg p-6 rounded-xl flex flex-col gap-6">
+                    <div class="flex justify-between items-center border-b border-amber-800 pb-3">
+                        <div>
+                            <h2 class="text-2xl font-bold font-cinzel gold-gradient-text">5. The Sacred Shrine of Belief Systems</h2>
+                            <p class="text-xs text-amber-300">Topic 3.3: Religious Schisms & Syncretic Beliefs</p>
+                        </div>
+                        <button onclick="renderScreen('courtyard')" class="px-3 py-1 bg-amber-900/60 border border-amber-700 text-xs rounded text-amber-200">
+                            <i class="fa-solid fa-arrow-left"></i> Return to Courtyard
+                        </button>
+                    </div>
+
+                    <div class="text-sm text-amber-100/90 space-y-2 bg-black/40 p-4 rounded border border-amber-900/50">
+                        <p><strong class="text-amber-400">Puzzle Prompt:</strong> Religious changes occurred rapidly between 1450 and 1750. Analyze the statements regarding Christian, Islamic, and South Asian belief systems to solve the Sacred Shrine Lock.</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Question 1: Protestant Reformation -->
+                        <div class="bg-amber-950/40 p-4 rounded border border-amber-800">
+                            <p class="text-xs font-bold text-amber-300 mb-2">1. What marked the break with existing Catholic traditions in Europe?</p>
+                            <div class="space-y-1 text-xs">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="rel-1" value="wrong" class="text-amber-600">
+                                    <span>The adoption of Eastern Orthodoxy by French Monarchs.</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="rel-1" value="correct" class="text-amber-600">
+                                    <span>The Protestant Reformation initiated by Martin Luther breaking with papal authority.</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Question 2: Ottoman-Safavid Conflict -->
+                        <div class="bg-amber-950/40 p-4 rounded border border-amber-800">
+                            <p class="text-xs font-bold text-amber-300 mb-2">2. Political rivalries between Ottoman and Safavid Empires intensified which Islamic split?</p>
+                            <div class="space-y-1 text-xs">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="rel-2" value="correct" class="text-amber-600">
+                                    <span>The split between Sunni Islam (Ottomans) and Shi'a Islam (Safavids).</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="rel-2" value="wrong" class="text-amber-600">
+                                    <span>The division between Sufism and Theravada Buddhism.</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Question 3: Sikhism -->
+                        <div class="bg-amber-950/40 p-4 rounded border border-amber-800">
+                            <p class="text-xs font-bold text-amber-300 mb-2">3. How did Sikhism develop in South Asia during this era?</p>
+                            <div class="space-y-1 text-xs">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="rel-3" value="correct" class="text-amber-600">
+                                    <span>It developed as a syncretic religion in the context of interactions between Hinduism and Islam.</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="rel-3" value="wrong" class="text-amber-600">
+                                    <span>It was enforced forcibly by Portuguese Jesuit missionaries in Goa.</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-3">
+                        <button onclick="checkBeliefPuzzle()" class="gold-btn px-6 py-2 rounded text-sm">
+                            <i class="fa-solid fa-hands-praying mr-1"></i> Unlock Sacred Shrine
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkBeliefPuzzle() {
+            const r1 = document.querySelector('input[name="rel-1"]:checked')?.value;
+            const r2 = document.querySelector('input[name="rel-2"]:checked')?.value;
+            const r3 = document.querySelector('input[name="rel-3"]:checked')?.value;
+
+            if (r1 === 'correct' && r2 === 'correct' && r3 === 'correct') {
+                gameState.keysUnlocked.belief = true;
+                showModal("Shrine Unlocked!", "<p class='text-green-300 font-bold'>Religious Continuity & Change Decoded!</p><p>You successfully identified the Protestant Reformation, the Sunni-Shi'a Ottoman-Safavid split, and the syncretic origins of Sikhism.</p><p class='text-xs text-amber-300 mt-2'><strong>AP World Concept:</strong> Religious disputes intensified state conflicts, while inter-religious interactions created new syncretic faiths like Sikhism.</p>");
+                renderScreen('courtyard');
+            } else {
+                showModal("Heresy Detected", "<p class='text-red-400'>Incorrect choices regarding religious schisms or developments.</p><p class='text-xs text-amber-200 mt-2'><strong>Hint:</strong> Protestantism broke Western Christianity; Ottomans (Sunni) fought Safavids (Shi'a); Sikhism blended Hindu & Islamic interactions.</p>");
+            }
+        }
+
+        function triggerFailure(title, reason) {
+            gameState.currentRoom = 'failure';
+            const container = document.getElementById('screen-container');
+            container.innerHTML = `
+                <div class="parchment-bg border-2 border-red-600 p-8 rounded-xl text-center my-auto">
+                    <div class="w-20 h-20 rounded-full bg-red-950 border-2 border-red-500 flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-solid fa-skull text-4xl text-red-500"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold font-cinzel text-red-500 mb-2">${title}</h2>
+                    <p class="text-sm text-red-200 mb-6 max-w-lg mx-auto bg-black/60 p-4 rounded border border-red-900">${reason}</p>
+                    
+                    <div class="flex justify-center gap-4">
+                        ${gameState.tokens > 0 ? `
+                            <button onclick="useTokenToBacktrack()" class="gold-btn px-6 py-2 rounded text-sm">
+                                <i class="fa-solid fa-coins mr-1"></i> Spend 1 Seal Token to Backtrack
+                            </button>
+                        ` : ''}
+                        <button onclick="restartGame()" class="danger-btn px-6 py-2 rounded text-sm">
+                            <i class="fa-solid fa-rotate-left mr-1"></i> Restart Escaping
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function useTokenToBacktrack() {
+            if (gameState.tokens > 0) {
+                gameState.tokens--;
+                gameState.mistakesCount = 0;
+                showModal("Imperial Token Spent", "<p class='text-amber-300'>You used 1 Imperial Seal Token to bribe guards and restore state stability!</p>");
+                renderScreen('courtyard');
+            }
+        }
+
+        function attemptFinalEscape() {
+            const keysCount = Object.values(gameState.keysUnlocked).filter(Boolean).length;
+            if (keysCount < 3) {
+                showModal("Gate Sealed", "<p class='text-red-400'>You need at least 3 Unlocked Keys to attempt final sovereignty!</p>");
+                return;
+            }
+
+            // Determine Ending Title
+            if (keysCount === 5) {
+                gameState.activeEnding = "Grand Vizier Mastermind (100% Complete)";
+            } else if (gameState.keysUnlocked.bureaucracy && gameState.keysUnlocked.architecture) {
+                gameState.activeEnding = "Divine Sovereign of Legitimacy";
+            } else {
+                gameState.activeEnding = "Master of the Gunpowder Realm";
+            }
+
+            renderScreen('victory');
+        }
+
+        function createVictoryHTML() {
+            const timeTakenSeconds = (35 * 60) - gameState.timer;
+            const minutes = Math.floor(timeTakenSeconds / 60);
+            const seconds = timeTakenSeconds % 60;
+
+            return `
+                <div class="parchment-bg border-2 border-yellow-500 p-8 rounded-xl text-center my-auto flex flex-col items-center">
+                    <div class="w-20 h-20 rounded-full bg-yellow-950 border-2 border-yellow-400 flex items-center justify-center mb-4 pulse-gold">
+                        <i class="fa-solid fa-crown text-4xl text-yellow-400"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold font-title gold-gradient-text mb-2">IMPERIAL VICTORY ACHIEVED!</h2>
+                    <p class="text-amber-300 font-cinzel text-sm tracking-widest mb-4">ENDING UNLOCKED: ${gameState.activeEnding}</p>
+
+                    <div class="max-w-2xl w-full bg-black/60 p-6 rounded-lg border border-amber-800 text-left space-y-4 text-sm text-amber-100/90 mb-6">
+                        <h3 class="font-bold text-amber-400 border-b border-amber-800 pb-2 font-cinzel">AP World History: Unit 3 Mastery Report</h3>
+                        
+                        <div class="grid grid-cols-2 gap-4 text-xs font-cinzel">
+                            <div><strong>Completion Time:</strong> ${minutes}m ${seconds}s</div>
+                            <div><strong>Imperial Tokens Remaining:</strong> ${gameState.tokens} / 3</div>
+                            <div><strong>Wings Unlocked:</strong> ${Object.values(gameState.keysUnlocked).filter(Boolean).length} / 5</div>
+                            <div><strong>AP SPICE-T Score:</strong> 5 / 5 (Advanced)</div>
+                        </div>
+
+                        <div class="text-xs space-y-2 text-amber-200/90 pt-2 border-t border-amber-900">
+                            <p><strong>Core Concept Summaries Mastered:</strong></p>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Expansion:</strong> Gunpowder, cannons, and armed trade created large land empires (Ottoman, Safavid, Mughal, Qing).</li>
+                                <li><strong>Administration:</strong> Centralization via Devshirme, Janissaries, Salaried Samurai, and Zamindars.</li>
+                                <li><strong>Legitimation:</strong> Divine Right, Versailles, Taj Mahal, and Imperial Portraits.</li>
+                                <li><strong>Revenue:</strong> Tax farming, tribute lists, and Ming silver hard currency.</li>
+                                <li><strong>Beliefs:</strong> Protestant Reformation, Ottoman-Safavid Sunni/Shi'a rivalries, and Sikhism.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <button onclick="restartGame()" class="gold-btn px-8 py-3 rounded-lg text-base">
+                        <i class="fa-solid fa-rotate-right mr-2"></i> Replay Escape Room
+                    </button>
+                </div>
+            `;
+        }
+
+        function restartGame() {
+            gameState.timer = 35 * 60;
+            gameState.tokens = 3;
+            gameState.mistakesCount = 0;
+            gameState.keysUnlocked = { gunpowder: false, bureaucracy: false, architecture: false, revenue: false, belief: false };
+            startTimer();
+            renderScreen('intro');
+        }
+
+        function openHintModal() {
+            let roomKey = 'gunpowder';
+            if (gameState.currentRoom.startsWith('room_')) {
+                roomKey = gameState.currentRoom.replace('room_', '');
+            }
+            
+            const hintData = historicalData[roomKey] || historicalData.gunpowder;
+
+            if (gameState.tokens > 0) {
+                gameState.tokens--;
+                updateHUD();
+                showModal("Imperial Clue Unlocked", `<p class='text-amber-200'><strong>${hintData.title} Hint:</strong></p><p class='text-sm text-amber-100 mt-2'>${hintData.clue}</p><p class='text-xs text-amber-400 mt-3'>Spent 1 Imperial Seal Token. Tokens left: ${gameState.tokens}</p>`);
+            } else {
+                showModal("No Tokens Remaining", "<p class='text-red-400'>You have no Imperial Seal Tokens remaining to request clues!</p>");
+            }
+        }
+
+        function showModal(title, content) {
+            document.getElementById('modal-title').innerHTML = title;
+            document.getElementById('modal-body').innerHTML = content;
+            document.getElementById('game-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('game-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
